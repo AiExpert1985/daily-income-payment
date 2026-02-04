@@ -15,3 +15,8 @@ Flutter Windows desktop app for identifying missing payment records. Compares tw
 - A: Include them in results with null new account number; user will add mapping manually later
 
 ---
+
+## Project Foundation & Excel Parsing | 2026-02-04
+- Excel package: Use `excel` package (actively maintained, pure Dart, 164K+ monthly downloads)
+- Project structure: Flat with `services/` and `models/` folders (simpler for short-term tool)
+- File picker: Defer to next task (keeps parsing task focused)

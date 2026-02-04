@@ -91,12 +91,11 @@
 
 > APPEND ONLY BELOW THIS LINE
 
-  
-
-[Empty until tasks are completed]
-
-  
+- **Project Foundation & Excel Parsing**
+  • Change: Added `excel: ^4.0.6` dependency, created `PaymentRecord` and `AccountMapping` models, `ColumnConstants`, and `ExcelParserService`
+  • Decision: Use `excel` package (best maintained option)
+  • Constraint: Column detection is case-insensitive
 
 ---
 
-**Words:** ~250/4000 | **Updated:** 2026-02-04
+**Words:** ~280/4000 | **Updated:** 2026-02-04

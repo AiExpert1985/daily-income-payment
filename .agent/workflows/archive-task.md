@@ -82,14 +82,24 @@ STOP.
 
 ### Commit Discovery Decisions
 
-If task status is APPROVED and discovery-qa.md exists:
+If task is APPROVED and `discovery-qa.md` exists:
 
-1. Append discovery-qa.md to: `/obelisk/archive/discovery-log.md`
-2. Delete discovery-qa.md
+1. Collapse into decision statements
+2. Append to `/obelisk/archive/discovery-log.md`
+3. Delete `discovery-qa.md`
 
-**Rules**:
-- Do not modify content
-- Do not write for aborted or rejected tasks
+**Format:**
+```markdown
+## [TASK_NAME] | YYYY-MM-DD
+- [Topic]: [decision] ([rationale if brief])
+- [Topic]: [decision] ([rationale if brief])
+```
+
+**Rules:**
+- Decisions only, not Q&A
+- One line per decision
+- Append-only
+- Skip if nothing durable
 
 ---
 ## Feature Isolation (If Specified)

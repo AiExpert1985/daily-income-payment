@@ -1,7 +1,6 @@
 ---
 description: Initialize new Obelisk project
 ---
-
 **CURRENT STATE: PROJECT START**
 
 Two-phase process: Discovery (discussion) → Initialization (file creation).
@@ -155,12 +154,19 @@ If ambiguity remains:
 
 ## Discovery Exit
 
-After user confirms summary:
+Output exactly:
+```
+Review the summary above.
+- Type `initialize` to create project files
+- Or reply with corrections to update the summary
 
-> "Summary confirmed. Type **initialize** to create project files."
+Awaiting input.
+```
 
-- On **initialize** → proceed to PHASE 2
-- On corrections → update summary and confirm again
+**STOP. Do not proceed until user responds.**
+
+- If `initialize` → proceed to PHASE 2
+- Otherwise → treat as corrections, update summary, confirm again
 
 ---
 
@@ -250,11 +256,10 @@ Concise, bounded summary of the project as described and approved by the user.
 Capture system purpose, users, boundaries, and high-level intent.
 Do not include raw questions, speculation, or implementation detail.
 
-- Q: <resolved project-level clarification>
-- A: <concise, user-approved understanding>
-
-- Q: <next clarification>
-- A: <approved understanding>
+**Decisions:**
+- [Topic]: [decision or constraint] ([rationale if brief])
+- [Topic]: [decision]
+- [Topic]: [decision]
 
 ---
 ```
@@ -305,3 +310,5 @@ Append-only audit log. Not intended for linear reading.
 > **Next:**
 > - `/new-task` — Define the first task
 > - `/suggest-task` — Get task recommendations
+
+
