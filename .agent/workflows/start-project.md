@@ -1,6 +1,7 @@
 ---
 description: Initialize new Obelisk project
 ---
+
 **CURRENT STATE: PROJECT START**
 
 Two-phase process: Discovery (discussion) → Initialization (file creation).
@@ -82,16 +83,18 @@ Understand the project through discussion. **No files created yet.**
 
 ### 1. Open
 
-Ask for a high-level description of the system, users, and constraints.  
-**Wait for user response.**
+Output exactly:
+```
+PHASE 1: DISCOVERY
 
-> "Run discovery to define contracts and memory (recommended),  
-> or skip and use minimal defaults?  
->  
-> **Continue** or **skip**?"
+Describe your system to help initialize contracts and memory.
+Type `skip` to use minimal defaults (not recommended).
+```
 
-- If user chooses **skip** → proceed to PHASE 2 (minimal initialization)
-- If user chooses **continue** → proceed below
+**STOP. Wait for user response.**
+
+- If `skip` → proceed to PHASE 2
+- Otherwise → treat response as project description, proceed to Clarification
 
 ---
 
@@ -302,5 +305,3 @@ Append-only audit log. Not intended for linear reading.
 > **Next:**
 > - `/new-task` — Define the first task
 > - `/suggest-task` — Get task recommendations
-
-
