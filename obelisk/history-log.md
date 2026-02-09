@@ -34,3 +34,21 @@
 **Deferred:** Processing logic and output screen (next task)
 
 ---
+
+## 2026-02-09 | TASK | Reconciliation Service and Output Screen | APPROVED
+
+**Summary:** Implement comparison, aggregation, and output display for missing payment records
+
+**Outcome:** Implementation complete. Windows build successful.
+
+**Decisions:**
+- Output shows aggregated totals by old account with expandable details
+- No export functionality needed
+- Missing mapping shows "لا يوجد رقم حساب جديد مقابل" in new account cell
+- Multiple mappings show "يوجد أكثر من رقم حساب جديد" in new account cell
+- Tapping row expands to show individual payments table
+- Added intl package for Arabic number/date formatting
+
+**Deferred:** (none)
+
+---
