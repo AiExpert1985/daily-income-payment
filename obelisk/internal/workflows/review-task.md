@@ -13,28 +13,14 @@ Role: **Reviewer** — Validate execution matches frozen intent.
 ### Required Inputs
 
 The following MUST exist:
-- `/obelisk/temp-state/task.md`
-- `/obelisk/temp-state/plan.md`
-- `/obelisk/temp-state/implementation-notes.md`
+- `/obelisk/workspace/active-task.md`
+- `/obelisk/workspace/plan.md`
+- `/obelisk/workspace/implementation-notes.md`
+- `/obelisk/workspace/contract-changes.md`
+- `/obelisk/contracts/core.domain.md`
 
 If any are missing → **STOP**, report the missing file path.
 
-### Load Context
-
-**Contracts:**
-1. Always read: `/obelisk/state/core.domain.md`
-2. Read feature contracts when task scope appears to involve them  
-   (Check: task description, affected files, or potential invariants)
-3. If uncertain, read the feature contract
-
-**Memory:**
-1. Always read: `/obelisk/memory/core.memory.md`
-2. Read feature memory when task scope appears to involve it
-3. If uncertain, read the feature memory
-
-**Rule:** When in doubt, read the file. Missing context is worse than extra tokens.
-
-During review, be conservative: re-check any feature contracts or memory that could plausibly be affected, even indirectly.
 
 ---
 
@@ -46,7 +32,6 @@ During review, be conservative: re-check any feature contracts or memory that co
 * Verify actual code matches plan (not just notes)
 * Use frozen task as intent — do NOT reinterpret
 * Treat contracts as authoritative business invariants that MUST hold in the final code
-* Use project memory (`*.memory.md`) as **context only**, not as approval criteria
 * Base conclusions on **inspection of real code**, not confidence or summaries
 
 **MUST NOT:**
@@ -74,7 +59,7 @@ If you cannot point to the code, mark the item as **✗**.
 
 ## Review Checklist
 
-Any failure → **CHANGES REQUIRED**
+Any failure → **REJECTED**
 
 1. **Task → Plan:** All success criteria mapped to steps?
 2. **Plan → Code:** All steps actually implemented in source files?
@@ -86,12 +71,12 @@ Any failure → **CHANGES REQUIRED**
 
 ## Review Output
 
-Write to `/obelisk/temp-state/review-notes.md`:
+Write to `/obelisk/workspace/review-notes.md`:
 
 ```markdown
 # Review Outcome
 
-**Status:** APPROVED | CHANGES REQUIRED
+**Status:** APPROVED | REJECTED
 
 ## Summary
 [2–3 sentence factual summary]
@@ -117,4 +102,4 @@ Write to `/obelisk/temp-state/review-notes.md`:
 
 **Success:**
 
-> "✓ REVIEW COMPLETE — Status: [APPROVED|CHANGES REQUIRED]"
+> "✓ REVIEW COMPLETE — Status: [APPROVED|REJECTED]"

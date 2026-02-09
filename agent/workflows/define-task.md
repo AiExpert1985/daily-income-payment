@@ -1,7 +1,6 @@
 ---
 description: Creates a new Obelisk task
 ---
-
 **CURRENT STATE: TASK DISCOVERY**
 
 Define a new task through discussion.
@@ -22,54 +21,71 @@ If execution is triggered at any point → **STOP immediately**.
 **Check if task description was provided:**
 
 **IF user provided description:**
+
 ```
-/new-task Add image picker to main screen
+/task Add image picker to main screen
 ```
+
 - Extract task_description = "Add image picker to main screen"
 - Proceed to Preflight
 
 **IF no description:**
+
 ```
-/new-task
+/task
 ```
-- Output: "Please describe the task you'd like to work on."
+
+- Output: "Describe your task:"
+- Call `internal/workflows/suggest-task.md` (outputs suggestions below)
 - Wait for response
 - Set task_description = [response]
 - Proceed to Preflight
 
 ---
 
+## Hotfix Assessment (If Description Provided)
+
+Before starting discovery, assess whether the task qualifies as a hotfix.
+
+**A task qualifies as hotfix if ALL are true:**
+- Scope is narrow and clearly defined
+- Change is mechanical and localized
+- No design or architectural decisions required
+- No contract or memory changes required
+- Low-risk and easily reversible
+
+**Common examples (non-exhaustive):**
+- Typo, formatting, or whitespace fix
+- Simple rename (variable, function, file)
+- Add missing import or dependency
+- Trivial bug fix (null check, off-by-one)
+
+**If criteria met:**
+- Output: "Detected simple fix. Running hotfix path."
+- Call `internal/workflows/hotfix.md` with description
+- STOP
+
+**If criteria NOT met or uncertain:**
+- Proceed to Preflight (full task flow)
+
+---
 ## Preflight
 
 ### Clean Workspace
 
-- Delete all files in `/obelisk/temp-state/`
+- Delete all files in `/obelisk/workspace/`
 
 ### Load Inputs
 
-#### Required Files (Mandatory)
-
-Always load these files.  
-If any are missing → **STOP** and report the missing path.
-
-- `/obelisk/state/core.domain.md`
-- `/obelisk/memory/core.memory.md`
+#### Required Files
 - `/obelisk/guidelines/ai-engineering.md`
 - `/obelisk/README.md`
+- `/obelisk/contracts/core.domain.md`
+- `/obelisk/history-log.md`
 
-#### Context Files (Conditional)
-
-**Contracts:**
-1. Read feature contracts when task scope appears to involve them  
-   (task description, affected files, or potential invariants)
-2. If uncertain, read the feature contract
-
-**Memory (advisory only):**
-1. Read feature memory when it provides relevant historical context
-2. If uncertain, reading memory is optional
-
-**Rule:** Missing a contract is worse than extra tokens. Memory is advisory.
-
+If missing:
+- STOP and report missing file
+- OUTPUT: use `/init-project` to initialized project properly
 
 
 ---
@@ -102,7 +118,6 @@ After completing reconnaissance, output only:
 ---
 
 ## Discovery Questions
-
 
 ### Question Rules
 
@@ -193,7 +208,7 @@ Check task against all loaded contracts with full context from Set 1.
 ⚠️ **Contract Conflict**
 
 Task: [specific step that conflicts]
-Conflicts with: [domain].domain.md — "[exact contract text]"
+Conflicts with: "[exact contract text]"
 
 **Options:**
 1. **Update task** — [what changes]
@@ -210,7 +225,6 @@ Choose: [1/2]
 
 Task introduces: [critical functionality]
 
-Suggested for [domain].domain.md:
 — [Rule — why contract-worthy]
 
 Add? [yes/no]
@@ -221,28 +235,26 @@ Add? [yes/no]
 
 ---
 
-### Feature Isolation (Optional)
+## TASK FREEZE
 
-Consider feature isolation only when a task introduces a new long-lived capability. Most tasks do not require this.
+At freeze, you MUST create all files below.  
+Empty change files are valid.
 
-It is appropriate when durable decisions or constraints cluster around one capability—often across tasks—and the capability is independent, evolvable, and represents a distinct business or user-facing function.
-
-If applicable:
-* Specify in `task.md` which contracts and existing context belong to the feature
-* Do NOT create files during discovery
-* Moving existing contracts to feature files does NOT require approval
+``` markdown
+/obelisk/workspace/
+├── active-task.md
+├── contract-changes.md
+└── discovery-decisions.md
+```
 
 ---
 
-## TASK FREEZE (UPDATED, SURGICAL)
+### `active-task.md`
 
-### Create task.md
+Write to `/obelisk/workspace/active-task.md`:
 
-**Contract Changes section MUST be added only after explicit user approval.**
+``` markdown
 
-Write to `/obelisk/temp-state/task.md`:
-
-```markdown
 # Task: [One-line descriptive name]
 
 ## Goal
@@ -258,59 +270,65 @@ Write to `/obelisk/temp-state/task.md`:
 
 ## Success Criteria
 - [Observable completion signals]
-  
-## Contract & Memory Changes (Optional)
-
-> New contracts or contract changes require explicit user approval.  
-> Contract moves (Feature Isolation) are applied as specified.  
-> Changes added here but applied to *.domain only during archive if task succeeds.
-
-**Modify existing:**
-- **File:** `/obelisk/state/[domain].domain.md`
-- **Action:** `create` | `update`
-- **Change:** [exact text or section]
-
-**New feature isolation:**
-- **Feature:** `[feature-name]`
-- **Contract** (`/obelisk/state/[feature].domain.md`):
-  - **Create:** [new invariant(s)]
-  - **Move from `core.domain.md`:** [exact rule(s) or section]
-- **Memory** (`/obelisk/memory/[feature].memory.md`):
-  - **Move from `core.memory.md`:** [exact entry or section]
-  
 
 ## Open Questions (if any)
 - [Unresolved ambiguities]
-```
 
+```
 
 ---
 
-### Discovery Q/A Capture
+### `contract-changes.md`
 
-Record discovery decisions in:`/obelisk/temp-state/discovery-qa.md`
+Write to `/obelisk/workspace/contract-changes.md`:
 
-**Rules**:
-- Write concise, self-contained Q/A representing the model’s understood and user-approved interpretation
-- Do not copy raw or verbatim user text
-- Append-only; do not revise earlier entries
-- Ephemeral (temp-state only), non-authoritative
-- Discarded if the task is aborted or rejected
+``` markdown
+
+# Contract Changes — [Task Name]
+
+**Action:** update | create
+**Change:**
+- [exact text]
+
+**Action:** create | update
+**Change or Move:**
+- [exact text]
+
+```
+
+**Rules:**
+
+- **Only include contract changes explicitly approved by the user during discovery**
+- If no contract changes were approved, the file MUST still exist and remain empty
+
+---
+
+## `Discovery Decisions Capture`
+
+Write to `/obelisk/workspace/discovery-decisions.md`
 
 **Format**:
 
 ```markdown
 ## [TASK_NAME] | YYYY-MM-DD
 
-**Task:** <one-line description copied from task.md header>
+**Summary:**
+- [one-line task intent]
 
-- Q: <resolved decision or clarification> [context]
-- A: <concise, user-approved answer or constraint>
+**Decisions:**
+- [decision 1]
+- [decision 2]
 
-- Q: <next resolved decision>
-- A: <next approved answer>
-
+**Deferred:**
+- [item if any]
 ```
+
+
+**Rules:** 
+- Write concise, self-contained decisions only (no Q/A, no reasoning) 
+- Represents model's understood and user-approved interpretation 
+- Do not copy raw or verbatim user text 
+- Append-only; do not revise earlier entries
 
 ---
 
@@ -318,21 +336,27 @@ Record discovery decisions in:`/obelisk/temp-state/discovery-qa.md`
 
 **Obelisk: Task Ready**
 
-| **Task**    | [One-line name from header]                   |
-| ----------- | --------------------------------------------- |
-| **Goal**    | [One sentence]                                |
-| **Scope**   | ✓ [2-3 key inclusions] ✗ [1-2 key exclusions] |
-| **Success** | [Primary completion signal]                   |
-| **Contracts** | *Will modify:* [domain].domain.md — [brief change] |
+| **Task**      | [One-line name from header]                   |
+| ------------- | --------------------------------------------- |
+| **Goal**      | [One sentence]                                |
+| **Scope**     | ✓ [2-3 key inclusions] ✗ [1-2 key exclusions] |
+| **Success**   | [Primary completion signal]                   |
+| **Contracts** | [brief change]                                |
 
-**Full definition:** `/obelisk/temp-state/task.md`
+**Full definition:** `/obelisk/workspace/active-task.md`
 
----
 
-**Options:**
-- `/execute-task` — Auto-run to completion (plan → implement → review → archive)
-- `/plan-task` — Run plan phase only and stop
-- `/update-task [changes]` — Modify task definition
-- `/abort-task` — Cancel and archive progress
+``` markdown
+Task ready.
+
+You may:
+- Edit the task text to refine it
+- Or type `/run-task` to execute the task
+```
 
 **STOP. Wait for user command.**
+
+IF user updated the task:
+1. Create Updated Task
+2. Empty /obelisk/workspace/
+3. Return to Code Reconnaissance, and continue from there

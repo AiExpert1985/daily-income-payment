@@ -12,9 +12,11 @@ It is intended for **real applications that are built to live and grow**, not fo
 Obelisk intentionally trades early friction for long-term safety, correctness, and sustained development speed.
 
 > **Contracts define truth. Tasks freeze intent. Plans constrain execution.  
-> Memory and logs explain context. Archives preserve history.**
+> Memory and history explain context. Archives preserve everything.**
 
 Higher layers constrain lower ones. Lower layers must never redefine higher ones.
+
+> Conceptually, Obelisk defines a **collaboration protocol**, and this repository provides a reference framework implementing it.
 
 ---
 
@@ -24,106 +26,48 @@ Higher layers constrain lower ones. Lower layers must never redefine higher ones
 - Sessions are stateless — models are interchangeable
 - Intent is frozen before execution
 - Memory is advisory and lossy by design
-- History lives in Git and task archives
+- All mutations flow through tasks
 - Recovery matters more than perfection
 - Friction is proportional to risk
 
 ---
 
-## How Obelisk Is Used
-
-All projects — new codebases or existing codebases — **must begin with** `/start-project`.
-
-- Initializes contracts, memory, and history
-- Discovery is optional and can be skipped when prompted
-
-
-For complex or existing projects, skip discovery to start with minimal setup and introduce contracts incrementally through tasks.
-
----
-
-## Quick Start
-
-**Initialize Obelisk (new or existing project):**
-
-```bash
-/start-project  # Discovery optional—can skip for existing codebases
-```
-
-**Standard workflow:**
-
-```bash
-/new-task [description]
-/execute-task
-```
-
-**Other common flows:**
-
-```bash
-/hotfix [description]
-/suggest-task
-/project-status
-```
-
----
-
 ## Commands
 
-### Core Workflows
+| Command                      | Purpose                                |
+| ---------------------------- | -------------------------------------- |
+| `/start-project`             | Universal entry                        |
+| `/define-task [description]` | Create new tasks                       |
+| `/run-task`                  | Run task from current phase to the end |
+| `/maintain [feature]`        | Analyze health, generate fix tasks     |
+| `/help`                      | Show available commands                |
 
-|Command|Purpose|
-|---|---|
-|`/start-project`|Initialize contracts + memory|
-|`/new-task`|Define and freeze task intent|
-|`/execute-task`|Run full flow: plan → implement → review → archive|
-|`/update-task`|Modify frozen task before execution|
-|`/abort-task`|Cancel and archive current task|
+### How `/task` Works
 
-### Utilities
+- **No description?** → Suggests 2–3 tasks
+- **Simple fix?** → Auto-detects and offers hotfix path
+- **Complex task?** → Full discovery, then freeze intent
+- **After freeze** → Say `/run`,  or  update the task
+- **Interrupted?** → Say `/run` to resume from any phase
 
-| Command           | Purpose                                       |
-| ----------------- | --------------------------------------------- |
-| `/diagnose`       | Diagnose feature health and surface conflicts |
-| `/hotfix`         | Guarded fast path for small mechanical fixes  |
-| `/suggest-task`   | Recommend next tasks                          |
-| `/project-status` | Snapshot of project health and active task    |
-| `/garden-memory`  | Compress project memory                       |
-| `/help`           | Show available commands                       |
-### Manual Phases
+### How `/maintain` Works
 
-For step-by-step execution or debugging:  
-`/plan-task`, `/implement-task`, `/review-task`, `/archive-task`
+- Analyzes code, contracts, and memory for drift
+- Surfaces top issues with severity ranking
+- Generates fix tasks (contract updates, code fixes)
+- All fixes flow through the normal task lifecycle
 
 ---
 
 ## Task Lifecycle
 
-During task discovery (`/new-task`), the agent inspects only relevant parts of the codebase to **understand the user’s intent in context** — not to infer solutions, redesign the system, or execute changes.
-
 ```
-/new-task → task.md
-↓
-/plan-task → plan.md
-↓
-/implement-task → implementation-notes.md
-↓
-/review-task → review-notes.md
-↓
-/archive-task
+task → plan → implement → review → archive
 ```
 
-`/execute-task` runs all phases automatically.
+All phases run automatically. The system detects current state and resumes if interrupted.
 
-### Hotfix Path
-
-`/hotfix` is a **guarded fast path** for small, low-risk, mechanical changes only.
-
-Hotfixes:
-
-- Must not modify contracts
-- Must remain small and atomic
-- Are rejected automatically if risk or size is detected
-- Are always recorded in project history
+**Hotfix path:** Simple mechanical fixes (typos, null checks) bypass the full lifecycle but are always recorded.
 
 ---
 
@@ -131,52 +75,49 @@ Hotfixes:
 
 ```
 /obelisk/
-├── state/
+├── contracts/                    # Authoritative business invariants
 │   ├── core.domain.md
-│   └── [feature].domain.md
-├── memory/
-│   ├── core.memory.md
-│   └── [feature].memory.md
-├── temp-state/
-│   ├── task.md
+├── workspace/                    # Ephemeral execution state (single active task)
+│   ├── active-task.md
 │   ├── plan.md
 │   ├── implementation-notes.md
 │   └── review-notes.md
-├── templates/
-│   ├── core.memory.template.md
-│   └── feature.memory.template.md
+├── history-log.md                # Live audit trail (actively consulted)
 ├── archive/
-│   ├── diagnostics/
-│   ├── project-history.md
-│   ├── discovery-log.md
+│   ├── diagnostics/              # Maintenance reports
 │   ├── completed/
 │   ├── rejected/
 │   └── aborted/
-└── .agent/workflows/
+├── guidelines/
+│   └── ai-engineering.md
+└── internal/                     # Framework internals (not user-callable)
+    ├── workflows/
+    ├── operations/
+    └── templates/
 ```
 
 ---
 
 ## Authority & Knowledge Systems
 
-Obelisk separates **truth**, **intent**, **context**, and **history** into explicit artifacts with strict authority boundaries.
+Obelisk separates **truth**, **intent**, **execution**, **context**, and **history** into explicit artifacts with strict authority boundaries.
 
 ### Contracts (`*.domain.md`) — **Authoritative Truth**
 
 Business invariants that must always hold.
-- Proposed explicitly during `/new-task`
-- Applied only during `/archive-task` of an approved task
-- Frozen during planning, implementation, review, and hotfixes
-- Aborted or rejected tasks must not modify contracts
 
-**Authority:** Highest. If anything conflicts with contracts, contracts win.
+- Updated only through completed tasks
+- Include a **Pending Review** section for observations awaiting `/maintain`
+
+**Authority:** Highest. Contracts always win.
 
 ---
 
-### Tasks (`task.md`) — **Frozen Intent**
+### Tasks (`workspace/task.md`) — **Frozen Intent**
 
 Defines what is being attempted and why.
-- Created and approved during `/new-task`
+
+- Created during `/new-task`
 - Immutable once frozen
 - Exists only while active, then archived
 
@@ -186,82 +127,35 @@ Defines what is being attempted and why.
 
 ### AI Engineering Rules (`ai-engineering.md`) — **Execution Constraints**
 
-Defines how the agent is allowed to plan, implement, and review work.
+Defines how the agent plans, implements, and reviews.
+
 - Read-only during all workflows
-- Enforced during planning, implementation, review, and hotfixes
 - Cannot override contracts or frozen task intent
 
-**Authority:** Below tasks, above memory and code  
-It constrains execution behavior, not system truth.
-
+**Authority:** Below tasks, above memory.
 
 ---
 
-### Project Memory (`*.memory.md`) — **Advisory Context**
+### History Log (`history-log.md`) — **Audit Trail**
 
-Durable context cache for patterns and rationale.
-- Non-authoritative and lossy by design
-- Updated only at lifecycle checkpoints
-- May be compressed via `/garden-memory`
-- Not documentation; full history lives in archives and Git
-
-**Authority:** Advisory only  
-If memory conflicts with contracts or tasks, it is wrong.
-
----
-
-### Discovery Log (`/obelisk/archive/discovery-log.md`) — **Decision Rationale**
-
-Explains _why_ approved decisions were made.
-
-- Records concise, user-approved discovery Q/A
-- Written during `/new-task`, committed only on successful `/archive-task`
-- Append-only; excludes aborted or rejected tasks
-
-Used by:
-- `/suggest-task`
-- `/contract-doctor`
-- `/garden-memory`
-
-**Authority:** Non-authoritative  
-It explains decisions; it never defines them.
-
----
-
-### Task Archives (`/obelisk/archive/`) — **Audit Trail**
-
-Preserve full task history.
-
-- `completed/` — approved and implemented tasks
-- `rejected/` — tasks needing revision
-- `aborted/` — cancelled tasks
-
-Used for auditability, learning, and recovery — never execution.
-
----
-
-### Project History (`project-history.md`) — **Chronological Index**
-
-Minimal timeline of all task outcomes.
+Complete record of all tasks and decisions.
 
 - Append-only
-- One line per task (date, name, status)
-- Used for quick project re-entry and sequencing
+- Actively consulted during discovery, maintenance, and status
+- Replaces separate history and discovery files
+
+**Authority:** Non-authoritative. Explains what happened; never defines truth.
 
 ---
 
-### Diagnostics (`/obelisk/archive/diagnostics/`) — **Health Records**
+### Archives (`/obelisk/archive/`) — **Full History**
 
-Feature health reports generated by `/diagnose`.
+- `completed/` — Approved tasks with all artifacts
+- `rejected/` — Tasks needing revision
+- `aborted/` — Cancelled tasks
+- `diagnostics/` — Maintenance reports
 
-- Conflicts between documents and code
-- Boundary violations and implementation risks
-- Append-only, date-prefixed files
-- For tracking health over time, not execution
-
-**Authority:** Non-authoritative  
-Reports findings; does not define intent or truth.
-
+Used for auditability and recovery — never execution.
 
 ---
 
@@ -270,11 +164,31 @@ Reports findings; does not define intent or truth.
 1. Contracts
 2. Active Task
 3. AI Engineering Rules
-4. Project Memory
-5. Discovery Log
-6. Chat History
+4. History Log
+5. Chat History
 
 **Rule:** Higher authority always wins.
+
+---
+
+## Single Mutation Path
+
+All changes — code, contracts, memory — flow through the task lifecycle.
+- No hidden updates
+- No bypassing tasks for “quick” contract changes
+- Complete audit trail by default
+- Tasks become version history
+
+---
+
+## Maintenance
+
+`/maintain` is the framework’s immune system:
+- Detects contract violations and staleness
+- Detects code risks and boundary violations
+- Suggests feature isolation when needed
+
+Run periodically to keep the system healthy.
 
 ---
 
@@ -287,4 +201,4 @@ It does **not**:
 - Override contracts, tasks, or plans
 - Participate in authority resolution
 
-Correctness is enforced by contracts, frozen tasks, guarded hotfixes, and execution rules — not this document.
+Correctness is enforced by contracts, frozen tasks, and execution rules — not this document.

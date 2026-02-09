@@ -13,26 +13,13 @@ Execute the approved plan sequentially and deterministically.
 ### Required Inputs
 
 The following MUST exist:
-- `/obelisk/temp-state/task.md`
-- `/obelisk/temp-state/plan.md`
+- `/obelisk/workspace/active-task.md`
+- `/obelisk/workspace/plan.md`
+- `/obelisk/workspace/contract-changes.md`
 - `/obelisk/guidelines/ai-engineering.md`
+- `/obelisk/contracts/core.domain.md`
 
-If any are missing → **STOP**, report the missing file path.
-
-### Load Context
-
-**Contracts:**
-1. Always read: `/obelisk/state/core.domain.md`
-2. Read feature contracts when task scope appears to involve them  
-   (Check: task description, affected files, or potential invariants)
-3. If uncertain, read the feature contract
-
-**Memory:**
-1. Always read: `/obelisk/memory/core.memory.md`
-2. Read feature memory when task scope appears to involve it
-3. If uncertain, read the feature memory
-
-**Rule:** When in doubt, read the file. Missing context is worse than extra tokens.
+If any are missing → **STOP** and report missing path
 
 
 ---
@@ -47,14 +34,14 @@ If any are missing → **STOP**, report the missing file path.
 **MUST NOT:**
 - Reinterpret, reorder, skip, merge, or redesign plan steps
 - Silently fix plan errors beyond what the plan explicitly allows
-- Modify contracts (`*.domain.md`) or project memory (`*.memory.md`) files
+- Modify contracts (`core.domain.md`)
 - Ask questions
 
 ---
 
 ## When to STOP
 
-Load `/.agent/workflows/abort-task.md` and STOP ONLY if:
+Load `/obelisk/internal/workflows/abort-task.md` and STOP ONLY if:
 
 - A plan step is **impossible** given the actual code state
   - **Impossible** = plan's *intent itself* cannot be achieved without reinterpretation or new decisions
@@ -62,9 +49,7 @@ Load `/.agent/workflows/abort-task.md` and STOP ONLY if:
     (renames, moves, minor signature adjustments) → proceed and log divergence
   - **When uncertain** whether a change is mechanical or requires new decisions → **STOP**
 
-- Continuing would **violate a contract** or frozen intent
-  **and** that violation is **not** explicitly authorized in
-  `/obelisk/temp-state/task.md → Contract Changes`
+- Task requires violating a contract **unless** explicitly approved in `/obelisk/workspace/contract-changes.md`
 
 - Completing the step requires **critical decisions not covered by the plan**
 
@@ -94,7 +79,7 @@ Log any divergence in `implementation-notes.md`.
 
 ## Implementation Notes
 
-Create `/obelisk/temp-state/implementation-notes.md` after implementation.
+Create `/obelisk/workspace/implementation-notes.md` after implementation.
 
 **If divergences:**
 ```markdown
@@ -112,8 +97,6 @@ Plan implemented as specified. No divergences.
 ---
 
 
-**Success:**
+**OUTPUT:**
+
 > "✓ IMPLEMENTATION COMPLETE — `implementation-notes.md` created"
->
-> `/review-task` — run review
-> `/abort-task` — Cancel and archive progress

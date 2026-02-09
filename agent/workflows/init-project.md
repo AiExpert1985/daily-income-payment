@@ -12,9 +12,9 @@ Two-phase process: Discovery (discussion) → Initialization (file creation).
 The following MUST NOT exist:
 
 **State files:**
-- `/obelisk/state/*.domain.md`
+- `/obelisk/contracts/*.domain.md`
 - `/obelisk/memory/*.memory.md`
-- `/obelisk/archive/project-history.md`
+- `/obelisk/history-log.md`
 
 If any exist → **STOP**.
 
@@ -23,23 +23,6 @@ If any exist → **STOP**.
 > This project appears to be already initialized.  
 > Re-initialization is blocked to prevent accidental data loss.  
 > If you intended to start fresh, ensure no existing project state remains.
-
----
-
-## Required Files
-
-The following templates MUST exist:
-- `/obelisk/templates/core.memory.template.md`
-- `/obelisk/templates/feature.memory.template.md`
-- `/obelisk/README.md`
-
-If any file is missing → **STOP**.
-
-**Output to user:**
-> ⛔ PROJECT INIT FAILED  
-> Required file not found: [file path]  
->  
-> Ensure all files exist before running `/start-project`.
 
 ---
 
@@ -116,7 +99,6 @@ Ask only what would change contracts or durable understanding.
 Ask follow-up questions **only if needed** to resolve ambiguity
 introduced by earlier answers.
 
-
 ---
 
 ### 3. Summary
@@ -148,7 +130,7 @@ If ambiguity remains:
 **Safety Concerns:**  
 **Explicit Non-Goals:**  
 **Open Questions:**
-````
+```
 
 ---
 
@@ -198,7 +180,7 @@ If discovery was skipped:
 
 ## Required Outputs
 
-### Contracts (`/obelisk/state/`)
+### Contracts (`/obelisk/contracts/`)
 
 **`core.domain.md`** — Project-wide invariants only:
 - System identity and boundaries
@@ -207,93 +189,23 @@ If discovery was skipped:
 - Safety-critical rules
 - Open questions
 
-**`[feature].domain.md`** — Feature-specific invariants:
-- Create only for features with distinct rules
-- Do NOT duplicate or restate core contracts
-
-### Project Memory (`/obelisk/memory/`)
-
-Persist durable, non-authoritative project context.
-**Template structure is authoritative. Content is advisory.**
-
-**`core.memory.md`**
-- Created once during initialization
-- Must follow the canonical template exactly
-- Template source:  `/obelisk/templates/core.memory.template.md`
-- Create the file by copying the template verbatim
-- Populate only explicitly confirmed sections
-- Leave all other sections empty
-
-**`[feature].memory.md`**
-- Created only when explicitly approved (never inferred)
-- Must follow the canonical feature template
-- Template source:  `/obelisk/templates/feature.memory.template.md`
-- Do NOT create empty feature memories
-- Populate only confirmed sections
-- Leave remaining sections empty
-
-
-**Memory is non-authoritative and MUST NOT contradict contracts.**  
-**Template structure is authoritative.**
 
 ---
 
-### Discovery Log (`/obelisk/archive/`)
+### History Log (`/obelisk/`)
 
-Create `discovery-log.md`.
+Create `history-log.md`:
 
-#### If discovery was run:
+Call `internal/operations/write-history.md`
 
-Append **project-level discovery record**:
-
-```markdown
-# Discovery Log
-
-## PROJECT DISCOVERY | YYYY-MM-DD
-
-**Project Summary:**
-Concise, bounded summary of the project as described and approved by the user.
-Capture system purpose, users, boundaries, and high-level intent.
-Do not include raw questions, speculation, or implementation detail.
-
-**Decisions:**
-- [Topic]: [decision or constraint] ([rationale if brief])
-- [Topic]: [decision]
-- [Topic]: [decision]
-
----
-```
-
-#### If discovery was skipped:
-
-Create the file with header only:
-
-```markdown
-# Discovery Log
-
-Append-only record of approved discovery decisions.
-```
-
-#### Rules:
-
-- Record **curated, self-contained, user-approved understanding**
-- Do **not** copy raw or verbatim user text
-- Do **not** infer beyond confirmed discovery
-- Append-only; **non-authoritative**
-- Task-level discovery is appended later during `/archive-task`
-
-
----
-
-### Project History (`/obelisk/archive/`)
-
-Create `project-history.md`:
-
-```markdown
-# Project History
-
-Append-only audit log. Not intended for linear reading.
-```
+**Input:**
+- entry_kind: `PROJECT`
+- name: [project name from discovery]
+- status: `INITIALIZED`
+- summary: [one-line project description]
+- outcome: "Project initialized"
+- decisions: [from discovery summary if relevant]
+- deferred: (none)
 
 ---
 
@@ -301,14 +213,5 @@ Append-only audit log. Not intended for linear reading.
 
 > ✅ PROJECT INITIALIZED
 > 
-> **Created:**
-> - `core.domain.md` + [N] feature contracts
-> - `core.memory.md` + [N] feature memories
-> - `project-history.md`
-> - `discovery-log.md`
-> 
-> **Next:**
-> - `/new-task` — Define the first task
-> - `/suggest-task` — Get task recommendations
 
-
+STOP.
