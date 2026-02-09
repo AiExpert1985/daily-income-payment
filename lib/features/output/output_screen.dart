@@ -85,15 +85,29 @@ class OutputScreen extends ConsumerWidget {
     return Column(
       children: [
         // Summary header
-        _buildSummaryHeader(context, result),
+        _buildSummaryHeader(context, result, state),
         const Divider(height: 1),
+
+        // Search Bar
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: 'بحث برقم الحساب (القديم أو الجديد)...',
+              prefixIcon: Icon(Icons.search),
+              border: OutlineInputBorder(),
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            ),
+            onChanged: notifier.setSearchQuery,
+          ),
+        ),
 
         // Results list
         Expanded(
           child: ListView.builder(
-            itemCount: result.aggregatedAccounts.length,
+            itemCount: state.filteredAccounts.length,
             itemBuilder: (context, index) {
-              final account = result.aggregatedAccounts[index];
+              final account = state.filteredAccounts[index];
               final isExpanded = state.expandedRows.contains(index);
 
               return _AccountRow(
@@ -111,8 +125,21 @@ class OutputScreen extends ConsumerWidget {
   Widget _buildSummaryHeader(
     BuildContext context,
     ReconciliationResult result,
+    OutputState state,
   ) {
     final numberFormat = intl.NumberFormat('#,##0.00', 'ar');
+
+    // Calculate totals from filtered accounts
+    final filteredAccounts = state.filteredAccounts;
+    final totalAccounts = filteredAccounts.length;
+    final totalRecords = filteredAccounts.fold(
+      0,
+      (sum, acc) => sum + acc.paymentCount,
+    );
+    final totalAmount = filteredAccounts.fold(
+      0.0,
+      (sum, acc) => sum + acc.totalAmount,
+    );
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -120,17 +147,11 @@ class OutputScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _SummaryItem(
-            label: 'عدد الحسابات',
-            value: result.aggregatedAccounts.length.toString(),
-          ),
-          _SummaryItem(
-            label: 'عدد السجلات',
-            value: result.totalMissingRecords.toString(),
-          ),
+          _SummaryItem(label: 'عدد الحسابات', value: totalAccounts.toString()),
+          _SummaryItem(label: 'عدد السجلات', value: totalRecords.toString()),
           _SummaryItem(
             label: 'إجمالي المبالغ',
-            value: numberFormat.format(result.totalMissingAmount),
+            value: numberFormat.format(totalAmount),
           ),
         ],
       ),

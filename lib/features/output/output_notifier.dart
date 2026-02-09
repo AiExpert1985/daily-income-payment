@@ -71,6 +71,14 @@ class OutputNotifier extends Notifier<OutputState> {
 
     state = state.copyWith(expandedRows: newExpanded);
   }
+
+  /// Updates the search query and clears expanded rows (to avoid index mismatches).
+  void setSearchQuery(String query) {
+    state = state.copyWith(
+      searchQuery: query,
+      expandedRows: {}, // Clear expansion when searching to avoid confusion
+    );
+  }
 }
 
 /// Provider for output screen state management.

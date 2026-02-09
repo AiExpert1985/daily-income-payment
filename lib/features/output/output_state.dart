@@ -29,12 +29,30 @@ class OutputState {
   /// Set of expanded row indices (for showing payment details).
   final Set<int> expandedRows;
 
+  /// Current search query for filtering accounts.
+  final String searchQuery;
+
   const OutputState({
     this.status = ReconciliationStatus.initial,
     this.result,
     this.errorMessage,
     this.expandedRows = const {},
+    this.searchQuery = '',
   });
+
+  /// Returns the list of accounts filtered by the search query.
+  List<AggregatedAccount> get filteredAccounts {
+    final accounts = result?.aggregatedAccounts ?? [];
+    if (searchQuery.isEmpty) {
+      return accounts;
+    }
+
+    final query = searchQuery.toLowerCase();
+    return accounts.where((account) {
+      return account.oldAccountNumber.toLowerCase().contains(query) ||
+          account.newAccountNumberOrNote.toLowerCase().contains(query);
+    }).toList();
+  }
 
   bool get isLoading => status == ReconciliationStatus.loading;
   bool get isSuccess => status == ReconciliationStatus.success;
@@ -45,12 +63,14 @@ class OutputState {
     ReconciliationResult? result,
     String? errorMessage,
     Set<int>? expandedRows,
+    String? searchQuery,
   }) {
     return OutputState(
       status: status ?? this.status,
       result: result ?? this.result,
       errorMessage: errorMessage,
       expandedRows: expandedRows ?? this.expandedRows,
+      searchQuery: searchQuery ?? this.searchQuery,
     );
   }
 }
