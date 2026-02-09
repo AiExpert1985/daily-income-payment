@@ -1,6 +1,7 @@
 ---
 description: Creates a new Obelisk task
 ---
+
 **CURRENT STATE: TASK DISCOVERY**
 
 Define a new task through discussion.
@@ -36,7 +37,7 @@ If execution is triggered at any point → **STOP immediately**.
 ```
 
 - Output: "Describe your task:"
-- Call `internal/suggest-task.md` (outputs suggestions below)
+- Call `/obelisk/internal/suggest-task.md` (outputs suggestions below)
 - Wait for response
 - Set task_description = [response]
 - Proceed to Preflight
@@ -359,4 +360,3 @@ Output EXACTLY this block. No additions.
 - Execute: `/run-task`
 - Edit: modify file, then re-run `/define-task`
 ```
-
