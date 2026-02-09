@@ -62,14 +62,13 @@ If any are missing → **STOP** and report
 
 ## Write History
 
-Call `internal/operations/write-history.md`
+Call `internal/write-history.md`
 
 **Input:**
 - entry_kind: `TASK`
 - name: [concise hotfix name from description]
 - status: `HOTFIX`
 - summary: [hotfix description]
-- outcome: "Applied successfully"
 - decisions: (none)
 - deferred: (none)
 

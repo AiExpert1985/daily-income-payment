@@ -42,14 +42,13 @@ Infer phase based on files present in `/obelisk/workspace/`:
 
 ## Write History (Always)
 
-Call `internal/operations/write-history.md`
+Call `internal/write-history.md`
 
 **Input:**
 - entry_kind: `TASK`
 - name: [task name]
 - status: `ABORTED`
 - summary: [one-line goal from active-task.md]
-- outcome: [abort reason]
 - decisions: (none)
 - deferred: (none)
 

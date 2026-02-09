@@ -17,7 +17,6 @@ description: Write a single append-only entry to history-log.md (atomic operatio
 | name      | Yes      | Project name, task name, or hotfix slug                            |
 | status    | Yes      | `INITIALIZED` \| `APPROVED` \| `REJECTED` \| `ABORTED` \| `HOTFIX` |
 | summary   | Yes      | One-line description                                               |
-| outcome   | Yes      | What happened                                                      |
 | decisions | No       | List of decisions made                                             |
 | deferred  | No       | List of deferred items                                             |
 
@@ -36,7 +35,6 @@ Append the following block to the end of the file using the current date
 ## YYYY-MM-DD | [name] | [status]
 
 **Summary:** [summary]  
-**Outcome:** [outcome]
 ```
 
 #### Optional: Decisions

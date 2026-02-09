@@ -15,12 +15,14 @@ Execute the approved plan sequentially and deterministically.
 The following MUST exist:
 - `/obelisk/workspace/active-task.md`
 - `/obelisk/workspace/plan.md`
-- `/obelisk/workspace/contract-changes.md`
 - `/obelisk/guidelines/ai-engineering.md`
 - `/obelisk/contracts/core.domain.md`
 
 If any are missing → **STOP** and report missing path
 
+### Optional Inputs: 
+
+- `/obelisk/workspace/contract-changes.md`
 
 ---
 
@@ -41,7 +43,7 @@ If any are missing → **STOP** and report missing path
 
 ## When to STOP
 
-Load `/obelisk/internal/workflows/abort-task.md` and STOP ONLY if:
+Load `/obelisk/internal/abort-task.md` and STOP ONLY if:
 
 - A plan step is **impossible** given the actual code state
   - **Impossible** = plan's *intent itself* cannot be achieved without reinterpretation or new decisions
@@ -49,7 +51,7 @@ Load `/obelisk/internal/workflows/abort-task.md` and STOP ONLY if:
     (renames, moves, minor signature adjustments) → proceed and log divergence
   - **When uncertain** whether a change is mechanical or requires new decisions → **STOP**
 
-- Task requires violating a contract **unless** explicitly approved in `/obelisk/workspace/contract-changes.md`
+- Task requires violating a contract **unless** explicitly approved in `/obelisk/workspace/contract-changes.md` (if file exists)
 
 - Completing the step requires **critical decisions not covered by the plan**
 

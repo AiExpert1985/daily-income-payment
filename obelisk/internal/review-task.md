@@ -16,11 +16,13 @@ The following MUST exist:
 - `/obelisk/workspace/active-task.md`
 - `/obelisk/workspace/plan.md`
 - `/obelisk/workspace/implementation-notes.md`
-- `/obelisk/workspace/contract-changes.md`
 - `/obelisk/contracts/core.domain.md`
 
 If any are missing → **STOP**, report the missing file path.
 
+### Optional Inputs: 
+
+- `/obelisk/workspace/contract-changes.md`
 
 ---
 

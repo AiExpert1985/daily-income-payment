@@ -40,12 +40,12 @@ Run all remaining phases in order until completion or STOP.
 
 ## Phase Workflows
 
-|Phase|Workflow|
-|---|---|
-|Plan|`internal/workflows/plan-task.md`|
-|Implement|`internal/workflows/implement-task.md`|
-|Review|`internal/workflows/review-task.md`|
-|Archive|`internal/workflows/archive-task.md`|
+| Phase     | Workflow                               |
+| --------- | -------------------------------------- |
+| Plan      | `/obelisk/workspace/plan-task.md`      |
+| Implement | `/obelisk/workspace/implement-task.md` |
+| Review    | `/obelisk/workspace/review-task.md`    |
+| Archive   | `/obelisk/workspace/archive-task.md`   |
 
 **Rules**
 

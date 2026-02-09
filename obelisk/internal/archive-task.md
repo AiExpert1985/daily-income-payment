@@ -16,11 +16,14 @@ The following MUST exist:
 - `/obelisk/workspace/plan.md`
 - `/obelisk/workspace/implementation-notes.md`
 - `/obelisk/workspace/review-notes.md`
-- `/obelisk/workspace/contract-changes.md`
 - `/obelisk/workspace/discovery-decisions.md`
 - `/obelisk/history-log.md`
 
 If any are missing → **STOP** and report missing path
+
+### Optional Inputs: 
+
+- `/obelisk/workspace/contract-changes.md`
 
 ---
 
@@ -35,14 +38,13 @@ Extract `[task-name]` from active-task.md header.
 
 ## Write History (Always)
 
-Call `internal/operations/write-history.md`
+Call `internal/write-history.md`
 
 **Input:**
 - entry_kind: `TASK`
 - name: [from active-task.md]
 - status: `APPROVED` | `REJECTED`
 - summary: [from discovery-decisions.md Summary]
-- outcome: [from review-notes.md]
 - decisions: [from discovery-decisions.md Decisions]
 - deferred: [from discovery-decisions.md or review-notes.md]
 
@@ -75,23 +77,14 @@ Addressing feedback requires creating a new task.
 
 ## Append Contract Changes (Approved Only)
 
-Read `/obelisk/workspace/contract-changes.md`
+**Check if `/obelisk/workspace/contract-changes.md` exists:**
 
-**If "No contract changes required":**
-- Skip this step
+**If file does not exist:**
+- Skip this step (no contract changes)
 
-**If changes specified:**
-- Append approved entries verbatim to target file
-- Target:
-  - Feature contract if specified → `/obelisk/contracts/[feature].domain.md`
-  - Otherwise → `/obelisk/contracts/core.domain.md`
+**If file exists:**
+- Append approved entries verbatim to `/obelisk/contracts/core.domain.md` under the section ## Recently added
 - No inference, no rewording, no restructuring
-
-**If destination missing:**
-- Core contract → **STOP** (project not initialized)
-- Feature contract → **STOP** (feature not created via task)
-
-**On append failure → STOP**
 
 ---
 
@@ -110,11 +103,6 @@ Destination: `/obelisk/archive/completed/YYYYMMDD-[task-name]/`
 ```
 ✅ TASK CLOSED — APPROVED
 Archived: /obelisk/archive/completed/YYYYMMDD-[task-name]/
-```
-
-**If memory word count > 4000:**
-```
-Note: Memory gardening recommended (run /maintain)
 ```
 
 STOP.

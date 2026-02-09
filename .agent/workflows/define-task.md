@@ -36,7 +36,7 @@ If execution is triggered at any point → **STOP immediately**.
 ```
 
 - Output: "Describe your task:"
-- Call `internal/workflows/suggest-task.md` (outputs suggestions below)
+- Call `internal/suggest-task.md` (outputs suggestions below)
 - Wait for response
 - Set task_description = [response]
 - Proceed to Preflight
@@ -47,22 +47,22 @@ If execution is triggered at any point → **STOP immediately**.
 
 Before starting discovery, assess whether the task qualifies as a hotfix.
 
-**A task qualifies as hotfix if ALL are true:**
-- Scope is narrow and clearly defined
+**A task qualifies as hotfix if :**
+- Scope is narrow, low-risk and clearly defined
 - Change is mechanical and localized
 - No design or architectural decisions required
-- No contract or memory changes required
-- Low-risk and easily reversible
+- No contract changes required
 
 **Common examples (non-exhaustive):**
 - Typo, formatting, or whitespace fix
 - Simple rename (variable, function, file)
 - Add missing import or dependency
 - Trivial bug fix (null check, off-by-one)
+- Pure UI changes
 
 **If criteria met:**
 - Output: "Detected simple fix. Running hotfix path."
-- Call `internal/workflows/hotfix.md` with description
+- Call `internal/hotfix.md` with description
 - STOP
 
 **If criteria NOT met or uncertain:**
@@ -79,7 +79,6 @@ Before starting discovery, assess whether the task qualifies as a hotfix.
 
 #### Required Files
 - `/obelisk/guidelines/ai-engineering.md`
-- `/obelisk/README.md`
 - `/obelisk/contracts/core.domain.md`
 - `/obelisk/history-log.md`
 
@@ -237,15 +236,14 @@ Add? [yes/no]
 
 ## TASK FREEZE
 
-At freeze, you MUST create all files below.  
-Empty change files are valid.
+Create the following files:
 
-``` markdown
-/obelisk/workspace/
-├── active-task.md
-├── contract-changes.md
-└── discovery-decisions.md
-```
+**Always:**
+- `/obelisk/workspace/active-task.md`
+- `/obelisk/workspace/discovery-decisions.md`
+
+**Only if contract changes were approved:**
+- `/obelisk/workspace/contract-changes.md`
 
 ---
 
@@ -278,9 +276,11 @@ Write to `/obelisk/workspace/active-task.md`:
 
 ---
 
-### `contract-changes.md`
+### `contract-changes.md` (conditional)
 
+**Only create this file if contract changes were approved during discovery.**
 Write to `/obelisk/workspace/contract-changes.md`:
+
 
 ``` markdown
 
@@ -345,18 +345,18 @@ Write to `/obelisk/workspace/discovery-decisions.md`
 
 **Full definition:** `/obelisk/workspace/active-task.md`
 
+---
+
+
+## TERMINAL STATE
+
+Output EXACTLY this block. No additions.
 
 ``` markdown
-Task ready.
+**Task frozen:** `/obelisk/workspace/active-task.md`
 
-You may:
-- Edit the task text to refine it
-- Or type `/run-task` to execute the task
+**Next steps (user-initiated):**
+- Execute: `/run-task`
+- Edit: modify file, then re-run `/define-task`
 ```
 
-**STOP. Wait for user command.**
-
-IF user updated the task:
-1. Create Updated Task
-2. Empty /obelisk/workspace/
-3. Return to Code Reconnaissance, and continue from there

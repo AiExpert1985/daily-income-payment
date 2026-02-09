@@ -13,7 +13,6 @@ The following MUST NOT exist:
 
 **State files:**
 - `/obelisk/contracts/*.domain.md`
-- `/obelisk/memory/*.memory.md`
 - `/obelisk/history-log.md`
 
 If any exist → **STOP**.
@@ -36,7 +35,7 @@ Understand the project through discussion. **No files created yet.**
 
 **Purpose**
 - Understand the system
-- Identify contract and project-memory candidates
+- Identify contract candidates
 
 **Questioning Rules**
 - Ask only what materially affects contracts or long-lived understanding
@@ -69,7 +68,7 @@ Output exactly:
 ```
 PHASE 1: DISCOVERY
 
-Describe your system to help initialize contracts and memory.
+Describe your system to help initialize contracts.
 Type `skip` to use minimal defaults (not recommended).
 ```
 
@@ -121,12 +120,6 @@ If ambiguity remains:
 - Core:
 - [Feature]:
 
-**Project Memory Candidates:**
-- Architectural decisions
-- UX / design philosophy
-- Explicit non-goals
-- Known risks or tradeoffs
-
 **Safety Concerns:**  
 **Explicit Non-Goals:**  
 **Open Questions:**
@@ -174,7 +167,7 @@ If discovery was skipped:
 - Populate only what is explicitly stated
 - Leave all other sections empty
 - Do NOT infer or normalize missing information
-- Do NOT create feature contract or memory files
+- Do NOT create feature contract files
 
 ---
 
@@ -196,7 +189,7 @@ If discovery was skipped:
 
 Create `history-log.md`:
 
-Call `internal/operations/write-history.md`
+Call `internal/write-history.md`
 
 **Input:**
 - entry_kind: `PROJECT`

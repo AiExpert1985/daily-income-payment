@@ -19,6 +19,10 @@ The following MUST exist:
 
 If any are missing → **STOP** and report missing path
 
+### Optional Inputs: 
+
+- `/obelisk/workspace/contract-changes.md`
+
 ---
 
 ## Code Analysis (Planning)
@@ -55,11 +59,11 @@ You MUST read the relevant code to produce an accurate plan.
 
 ## Blocking Conditions
 
-Load `internal/workflows/abort-task.md` and STOP if:
+Load `internal/abort-task.md` and STOP if:
 
 - Task is internally contradictory or infeasible given current codebase or constraints
 - Task intent cannot be executed as written without reinterpretation
-- Task requires violating a contract **unless** explicitly approved in `/obelisk/workspace/contract-changes.md`
+- Task requires violating a contract **unless** explicitly approved in `/obelisk/workspace/contract-changes.md` (if file exists)
 
 **STOP is terminal. No further execution is allowed.**
 
